@@ -1,0 +1,2 @@
+Curl API to interact with Lllama 3.2 LLM
+
