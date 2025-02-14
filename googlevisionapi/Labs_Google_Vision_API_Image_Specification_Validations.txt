@@ -1,0 +1,280 @@
+curl --location 'https://vision.googleapis.com/v1/images:annotate' \
+--header 'Authorization: Bearer nbytyurvblvKKWj6sLgdNy436sb7USzJ2mo897hjuijkumarwvrw88IXGejbA0427' \
+--header 'x-goog-user-project: gcp-sample-02' \
+--header 'Content-Type: application/json; charset=utf-8' \
+--data '{
+  "requests": [
+    {
+      "features": [
+        {
+          "maxResults": 10,
+          "type": "IMAGE_PROPERTIES"
+        }
+      ],
+      "image": {
+        "source": {
+          "imageUri": "https://images.xyz-abc.com/image/123/french-bread-pizza-bundle-image-web.jpeg"
+        }
+      }
+    }
+  ]
+}
+'
+
+Response:
+
+{
+
+  "responses": [
+
+    {
+
+      "imagePropertiesAnnotation": {
+
+        "dominantColors": {
+
+          "colors": [
+
+            {
+
+              "color": {
+
+                "red": 144,
+
+                "green": 207,
+
+                "blue": 96
+
+              },
+
+              "score": 0.08750421,
+
+              "pixelFraction": 0.004275165
+
+            },
+
+            {
+
+              "color": {
+
+                "red": 199,
+
+                "green": 149,
+
+                "blue": 100
+
+              },
+
+              "score": 0.074861325,
+
+              "pixelFraction": 0.0211815
+
+            },
+
+            {
+
+              "color": {
+
+                "red": 49,
+
+                "green": 188,
+
+                "blue": 103
+
+              },
+
+              "score": 0.06626482,
+
+              "pixelFraction": 0.006218422
+
+            },
+
+            {
+
+              "color": {
+
+                "red": 231,
+
+                "green": 198,
+
+                "blue": 57
+
+              },
+
+              "score": 0.032453664,
+
+              "pixelFraction": 0.00855033
+
+            },
+
+            {
+
+              "color": {
+
+                "red": 180,
+
+                "green": 153,
+
+                "blue": 122
+
+              },
+
+              "score": 0.024890102,
+
+              "pixelFraction": 0.026428293
+
+            },
+
+            {
+
+              "color": {
+
+                "red": 217,
+
+                "green": 184,
+
+                "blue": 125
+
+              },
+
+              "score": 0.019378277,
+
+              "pixelFraction": 0.007870191
+
+            },
+
+            {
+
+              "color": {
+
+                "red": 80,
+
+                "green": 42,
+
+                "blue": 23
+
+              },
+
+              "score": 0.016881594,
+
+              "pixelFraction": 0.010202099
+
+            },
+
+            {
+
+              "color": {
+
+                "red": 147,
+
+                "green": 115,
+
+                "blue": 21
+
+              },
+
+              "score": 0.010390447,
+
+              "pixelFraction": 0.004760979
+
+            },
+
+            {
+
+              "color": {
+
+                "red": 36,
+
+                "green": 64,
+
+                "blue": 24
+
+              },
+
+              "score": 0.005531528,
+
+              "pixelFraction": 0.0007773028
+
+            },
+
+            {
+
+              "color": {
+
+                "red": 28,
+
+                "green": 13,
+
+                "blue": 7
+
+              },
+
+              "score": 0.0020855502,
+
+              "pixelFraction": 0.0020404197
+
+            }
+
+          ]
+
+        }
+
+      },
+
+      "cropHintsAnnotation": {
+
+        "cropHints": [
+
+          {
+
+            "boundingPoly": {
+
+              "vertices": [
+
+                {
+
+                  "x": 100
+
+                },
+
+                {
+
+                  "x": 300
+
+                },
+
+                {
+
+                  "x": 300,
+
+                  "y": 266
+
+                },
+
+                {
+
+                  "x": 100,
+
+                  "y": 266
+
+                }
+
+              ]
+
+            },
+
+            "confidence": 0.75,
+
+            "importanceFraction": 0.801
+
+          }
+
+        ]
+
+      }
+
+    }
+
+  ]
+
+}
