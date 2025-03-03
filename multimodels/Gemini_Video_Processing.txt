@@ -1,0 +1,51 @@
+/** Video file processing using Gemini Multimodel using API call
+
+The video data can be stored in CDN, Azure Blob, GCP bucket, or AWS S3. For the purpose of video data analysis, 
+we would need that data to be sent to an LLM. There are two ways this can be done:
+
+1)Using a URI for the video (e.g., Azure Blob URL, GCP bucket URL, etc.)
+2)Getting the binary/base64 data from the video and sending it as part of a Gemini API call.
+This may be heavy in terms of data size but helps remove any issues related to URL access.
+
+**/
+curl --location 'https://us-central1-aiplatform.googleapis.com/v1/projects/gcp-sample-prj-01/locations/us-central1/publishers/google/models/gemini-2.0-flash-exp:generateContent' \
+--header 'Authorization: Bearer ABCDXYZUQ7hY-o-3bvYzm979DzkWk5VDTofT2wFbweU9U37x-QlctkmMNi5pgQx3rs-9Ogu8yyuUGLSV32knVS6mHVmMP4Xg_v7_fvwbaB5lExWQAPXaMOJxOurVvgqUyNSByHzmsjlPm6Rqhy9x_Ql5jMF57xV0GU4z4wJF0yKgs719bHi69oaCgYKATUSARMSFQHGX2MiJ_UVueHzrwWrE2ecWPwNgA0427' \
+--header 'Content-Type: text/plain' \
+--data '{
+    "contents": [{
+      "role": "user",
+      "parts": [
+       {
+          "text": "REPLACE_THIS_WITH_YOUR_PROMPT"
+        },
+        {
+      "inlineData": {
+        "mimeType": "video/mp4",
+        "data": "REPLACE _THIS_WITH_YOUR_BINARY_DATA FOR_VIDEO"
+    }
+      }
+      ]
+    }],
+    "safetySettings": [
+      {
+        "category": "HARM_CATEGORY_HATE_SPEECH",
+        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+      },
+      {
+        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+      },
+      {
+        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+      },
+      {
+        "category": "HARM_CATEGORY_HARASSMENT",
+        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+      }
+    ],
+    "generationConfig": {
+      "temperature": 0,
+      "maxOutputTokens": 8000
+    }
+  }'
