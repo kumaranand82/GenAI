@@ -28,7 +28,7 @@ def search_similar_images(input_image_path, image_hashes):
 
 # Example usage
 image_folder = "C://KAN//code//data"
-input_image_path = "C://KAN//Code//data//toast1.jpg"
+input_image_path = "C://KAN//Code//data//animalsafari1.jpg"
 
 # Generate hashes for the set of images
 image_hashes = generate_hashes(image_folder)

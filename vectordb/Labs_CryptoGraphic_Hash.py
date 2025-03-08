@@ -17,8 +17,7 @@ def calculate_image_hash(image_path):
         return hash_obj.hexdigest()
 
 def compare_hashes(hash1, hash2):
-    """Compare two SHA-256 hashes and return True if they are similar."""
-    print(f"Comapring images :",hash1,hash2)
+    """Compare two SHA-256 hashes and return True if they are similar."""    
     return hash1 == hash2
 
 def find_similar_images(folder_path):
@@ -26,8 +25,7 @@ def find_similar_images(folder_path):
     image_hashes = {}
     for image_file in os.listdir(folder_path):
         image_path = os.path.join(folder_path, image_file)
-        if os.path.isfile(image_path) and image_file.lower().endswith(('.png', '.jpg', '.jpeg')):
-            print(f"Comapring images :",image_path)
+        if os.path.isfile(image_path) and image_file.lower().endswith(('.png', '.jpg', '.jpeg')):        
 
             image_hash = calculate_image_hash(image_path)
             if image_hash in image_hashes:
