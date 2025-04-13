@@ -1,3 +1,5 @@
+****Please use the same with Caution and add your specific priorities/factors to consider while taking investing decisions*****
+
 
 Below is an enriched prompt that provides clear guidance for a generative AI model to deeply and carefully analyze the details of your portfolio and suggest an optimal strategy for investing an additional \$5,000. This prompt integrates specific instructions and key considerations while referencing the attached Excel sheet with your portfolio data:
 
