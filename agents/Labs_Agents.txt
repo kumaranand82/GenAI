@@ -1,0 +1,188 @@
+AgenticRAG with DB Agent Example:
+
+Implementation Example: Agentic RAG with a Database Agent
+This example highlights how Agentic RAG (Retrieval-Augmented Generation) integrates vector search systems
+with structured database access to enhance response accuracy and relevance. By combining knowledge retrieval 
+with database querying capabilities, Agentic RAG leverages multiple information sources to generate well-rounded 
+and contextually rich responses.
+
+
+*****Overview*****
+The system performs the following steps:
+
+**Analyzes user questions to determine if database access is needed
+**Retrieves relevant documents from a vector database
+**Queries structured data from a relational database when necessary
+**Synthesizes information from both sources to provide comprehensive answers
+
+*****Implementation****
+
+Key Components
+1. Vector Store Setup
+--Uses Chroma with OpenAI embeddings for document storage
+--Retrieves semantically similar documents based on query
+2. Database Agent
+--Connects to a PostgreSQL database
+--Formulates and executes SQL queries based on natural language questions
+3. ReAct Agent Approach
+--Reasoning and Acting framework
+--Plans steps and selects appropriate tools (database or retrieval)
+--Self-validates results before answering
+4. Tools Integration
+--SQL Tool: Executes database queries
+--Retrieval Tool: Gets relevant documents from vector store
+
+Advanced Extensions ( Not covered in this example but something to explore) 
+--Query Planning and Optimization
+--Integrating with Database Schema Understanding
+
+Credits:  The code example shared here used Copilot and other code generation tools. 
+######################################################################################################################
+
+import os
+from typing import List, Dict, Any
+from dotenv import load_dotenv
+from langchain.agents import AgentExecutor, create_react_agent
+from langchain.chains import RetrievalQA
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.prompts import PromptTemplate
+from langchain.schema import Document
+from langchain.tools import Tool
+from langchain.vectorstores import Chroma
+from langchain_community.utilities import SQLDatabase
+from langchain_openai import ChatOpenAI
+
+# Load environment variables
+load_dotenv()
+
+# Initialize LLM
+llm = ChatOpenAI(
+    model="gpt-4",
+    temperature=0,
+)
+
+# Connect to the Mongo/SQL Database for metadata access
+db = SQLDatabase.from_uri(
+    "postgresql://username:password@localhost:5432/customer_db"
+)
+
+# Set up Vector store for retrieval of info based on contextual similarity.
+embeddings = OpenAIEmbeddings()
+vector_store = Chroma(
+    persist_directory="./chroma_db",
+    embedding_function=embeddings
+)
+retriever = vector_store.as_retriever(
+    search_type="similarity",
+    search_kwargs={"k": 5}
+)
+
+# Create SQL Database Tool
+def run_sql_query(query: str) -> str:
+    """Execute SQL queries against the customer database."""
+    try:
+        result = db.run(query)
+        return result
+    except Exception as e:
+        return f"Error executing query: {str(e)}"
+
+sql_tool = Tool(
+    name="CustomerDatabase",
+    func=run_sql_query,
+    description="Useful for querying customer data. Input should be a valid SQL query."
+)
+
+# Create Retrieval Tool
+def retrieve_documents(query: str) -> List[Dict[str, Any]]:
+    """Retrieve relevant documents from the knowledge base."""
+    docs = retriever.get_relevant_documents(query)
+    results = [{"content": doc.page_content, "metadata": doc.metadata} for doc in docs]
+    return results
+
+retrieval_tool = Tool(
+    name="KnowledgeBase",
+    func=retrieve_documents,
+    description="Useful for retrieving information from the knowledge base about company policies, procedures, and general information."
+)
+
+# Define the agent prompt
+agent_prompt = PromptTemplate.from_template("""
+You are an intelligent assistant with access to both a knowledge base and a customer database.
+Use the tools available to answer questions comprehensively.
+
+For database questions, formulate precise SQL queries.
+For knowledge-based questions, search the knowledge base.
+For complex questions, you may need to use multiple tools and synthesize the information.
+
+{context}
+
+Question: {question}
+
+Think step by step about what information you need and which tools to use.
+""")
+
+# Create the agent
+tools = [sql_tool, retrieval_tool]
+agent = create_react_agent(llm, tools, agent_prompt)
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=True,
+    max_iterations=5
+)
+
+# Example usage
+def answer_query(question: str) -> str:
+    """Process user query using the agentic RAG system."""
+    response = agent_executor.invoke({"question": question, "context": ""})
+    return response["output"]
+
+# Test cases
+if __name__ == "__main__":
+    questions = [
+        # Database-oriented query
+        "How many customers made purchases over $1000 last month?",
+        
+        # Knowledge-base oriented query
+        "What is our return policy for electronics?",
+        
+        # Hybrid query requiring both sources
+        "Which products have the highest return rate and what are our policies for handling returns on these items?"
+    ]
+    
+    for q in questions:
+        print(f"Question: {q}")
+        print(f"Answer: {answer_query(q)}")
+        print("-------------------")
+
+
+
+
+
+
+def plan_query_strategy(question: str) -> Dict:
+    """Plan the query strategy based on question analysis."""
+    planning_prompt = f"""
+    Analyze this question: "{question}"
+    Determine:
+    1. Is database access needed? (yes/no)
+    2. Is knowledge retrieval needed? (yes/no)
+    3. What specific information should be extracted from each source?
+    4. In what order should the sources be consulted?
+    Provide your analysis as JSON.
+    """
+    
+    planning_response = llm.invoke(planning_prompt)
+    # Parse the JSON response
+    # Return the query plan
+
+
+# Add this to your system initialization
+table_info = db.get_table_info()
+db_schema_tool = Tool(
+    name="DatabaseSchema",
+    func=lambda x: table_info,
+    description="Returns the schema of the database to help formulate correct queries."
+)
+
+
