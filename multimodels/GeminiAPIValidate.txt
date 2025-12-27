@@ -1,0 +1,4 @@
+
+cURL command to test Gemini API key:
+
+curl \-H 'Content-Type: application/json' \  -d '{"contents":[{"parts":[{"text":"Explain Gen AI for beginners"}]}]}' \-X POST 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=GOOGLE_API_KEY'

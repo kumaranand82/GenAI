@@ -1,0 +1,38 @@
+Curl API to interact with Lllama 3.2 LLM
+
+GCP_BUCKET_URL_FOR_IMAGE= gs://github-repo/img/gemini/intro/testimage.jpg
+curl \
+  -X POST \
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "Content-Type: application/json" https://${ENDPOINT}/v1beta1/projects/${PROJECT_ID}/locations/${REGION}/endpoints/openapi/chat/completions \
+  -d '{"model":"meta/llama-3.2-90b-vision-instruct-maas","stream":false, "messages":[{"role": "user", "content": [{"image_url": {"url": " $GCP_BUCKET_URL_FORIMAGE"}, "type": "image_url"}, {"text": "What’s in this image?", "type": "text"}]}], "max_tokens": 40,"temperature":0.4,"top_k":10,"top_p":0.95, "n":1}'
+
+
+=====================================================================
+
+{
+	"model": "meta/llama-3.2-90b-vision-instruct-maas",
+	"stream": false,
+	"messages": [
+		{
+			"role": "user",
+			"content": [
+				{
+					"image_url": {
+						"url": "gs://kan-open-bkt-01/Toast_Celebration_Food_2024.jpg"
+					},
+					"type": "image_url"
+				},
+				{
+					"text": "Analyze the provided image using OCR capabilities to identify and extract text. Focus on identifying food items, including those that are blurred or partially visible. Provide details such as whether the items are fried, seared, etc. For packaged items, extract generic product names without brand names. If flowers are present, mention the types and name individual items in groups (e.g., flowers in a bouquet). Exclude humans, utensils,ecorations, and non-food items. Output primary items or ‘Not Applicable’. Provide a probability match (0-100) for each item identification.",
+					"type": "text"
+				}
+			]
+		}
+	],
+	"max_tokens": 4000,
+	"temperature": 0,
+	"top_k": 10,
+	"top_p": 0.95,
+	"n": 1
+}
