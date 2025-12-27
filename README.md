@@ -25,7 +25,8 @@ This repository contains:
 | **googlevisionapi/** | Labs using Google Vision API for image tagging |
 | **multimodels/** | Experiments with multimodal embedding models |
 | **vectordb/** | Semantic search labs using vector databases |
-| **data** | Test data folder
+| **data/** | Test data folder|
+| **notebooks/** | Sample notebooks with codebase|
 
 ---
 
